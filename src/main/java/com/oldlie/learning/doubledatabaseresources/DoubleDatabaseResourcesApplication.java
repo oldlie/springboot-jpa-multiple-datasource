@@ -40,6 +40,7 @@ public class DoubleDatabaseResourcesApplication implements ApplicationListener<C
 	private void run() {
 		Table1 table1 = new Table1();
 		table1.setTaText("table 1");
+		table1.setTaTitle("title 1");
 		this.table1Repository.save(table1);
 		Table2 table2 = new Table2();
 		table2.setTaText("table 2");

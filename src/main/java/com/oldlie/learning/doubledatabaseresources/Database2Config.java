@@ -1,7 +1,10 @@
 package com.oldlie.learning.doubledatabaseresources;
 
+import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateSettings;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -56,14 +60,17 @@ public class Database2Config {
     }
 
     @Autowired
+    private HibernateProperties hibernateProperties;
+    @Autowired
     private JpaProperties jpaProperties;
 
-    private Map<String, String> getVendorProperties(DataSource dataSource) {
-       //this.jpaProperties.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
-       //this.jpaProperties.setDatabase(Database.MYSQL);
-       //this.jpaProperties.setShowSql(true);
-       //this.jpaProperties.setGenerateDdl(true);
-        return this.jpaProperties.getProperties();
+    private Map<String, Object> getVendorProperties(DataSource dataSource) {
+        Map<String, String> map = new HashMap<>(256);
+        map.put(AvailableSettings.SHOW_SQL, "true");
+        map.put(AvailableSettings.HBM2DDL_AUTO, "update");
+        map.put(AvailableSettings.DIALECT, "org.hibernate.dialect.MySQLDialect");
+        return hibernateProperties.determineHibernateProperties(map,
+                new HibernateSettings());
     }
 
     @Primary
